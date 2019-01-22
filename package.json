@@ -1,0 +1,29 @@
+{
+  "name": "budgie",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch-js": "shadow-cljs watch app",
+    "build-js": "shadow-cljs release app",
+    "build-server": "lein deps && lein compile && lein uberjar",
+    "build": "run-p build-js build-server",
+    "repl": "rlwrap shadow-cljs cljs-repl app",
+    "server": "shadow-cljs server"
+  },
+  "author": "Jon Staab",
+  "license": "MIT",
+  "engines": {
+    "node": "8.15.0"
+  },
+  "devDependencies": {
+    "shadow-cljs": "^2.6.10"
+  },
+  "dependencies": {
+    "create-react-class": "^15.0.0",
+    "npm-run-all": "^4.0.0",
+    "plaid": "^2.10.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  }
+}

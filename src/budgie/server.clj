@@ -1,46 +1,65 @@
 (ns budgie.server
-  (:import (com.plaid.client PlaidClient))
-  (:require [org.httpkit.server :as http]
-            [environ.core :refer [env]]
-            [clojure.java.io :as io]))
+  (:require [org.httpkit.server :as http :refer [send!]]
+            [org.httpkit.client :as client]
+            [clojure.data.json :as json]
+            [clojure.java.io :as io]
+            [environ.core :refer [env]]))
+
+;; Utils
+
+(def dt-fmt
+  (java.time.format.DateTimeFormatter/ofPattern
+    "yyyy-MM-dd"
+    java.util.Locale/ENGLISH))
+
+(defn msg [type payload]
+  (pr-str {:type type :payload payload}))
 
 ;; State
 
 (def channels (atom {}))
-(def tokens (atom {}))
+(def sessions (atom {}))
 
 ;; Plaid client
 
-(def plaid
-  (-> (PlaidClient/newBuilder)
-    (.clientIdAndSecret (:plaid-client-id env) (:plaid-secret env))
-    (.publicKey (:plaid-public-key env))
-    (.sandboxBaseUrl)
-    (.build)
-    (.service)))
+(def plaid-client-id (:plaid-client-id env))
+(def plaid-public-key (:plaid-public-key env))
+(def plaid-secret (:plaid-secret env))
+(def plaid-url (:plaid-url env))
 
-(defn get-access-token [public-token]
-  (-> plaid (.itemPublicTokenExchangeRequest public-token) (.execute) (.body)))
+(defn plaid-get-access-token [public-token]
+  (client/post
+    {:url (str plaid-url "/item/public_token/exchange")
+     :headers {"Content-Type" "application/json"}
+     :body (json/write-str {"client_id" plaid-client-id
+                            "secret" plaid-secret
+                            "public_token" public-token})}))
 
-
-;; Utils
-
-(defn msg [type payload]
-  (pr-str {:type type :payload payload}))
+(defn plaid-get-transactions [session-id]
+  (let [{:keys [access-token]} (get @sessions session-id)
+        end (java.time.LocalDateTime/now)
+        start (.minusMonths end 6)]
+    (client/post
+      {:url (str plaid-url "/transactions/get")
+       :headers {"Content-Type" "application/json"}
+       :body (json/write-str {"client_id" plaid-client-id
+                              "secret" plaid-secret
+                              "access_token" access-token
+                              "start_date" (.format dt-fmt start)
+                              "end_date" (.format dt-fmt end)})})))
 
 ;; Handle message
 
 (defmulti handle-message (fn [channel {:keys [type]}] type))
 
-(defmethod handle-message :add-public-token [channel {:keys [payload]}]
+(defmethod handle-message :create-session [channel {:keys [payload]}]
   (let [{:keys [public-token]} payload
-        resp (get-access-token public-token)
-        result {:access-token (.getAccessToken resp)
-                :item-id (.getItemId resp)}]
-    (swap! tokens assoc public-token result)))
+        session-id (rand)]
+    (swap! sessions assoc session-id @(plaid-get-access-token public-token))
+    (send! channel (msg :session-created {:session-id session-id}))))
 
 (defmethod handle-message :load-transactions [channel {:keys [payload]}]
-  (plaid))
+  (send! channel (msg :transactions-loaded @(plaid-get-transactions (:session-id payload)))))
 
 ;; Websocket management
 
@@ -57,7 +76,7 @@
    :body (io/file (str "public/" path))})
 
 (defn handle-http [{:keys [uri]} channel]
-  (http/send! channel
+  (send! channel
     (case uri
       "/" (file-res "index.html" "text/html")
       "/img/favicon.png" (file-res "img/favicon.png" "image/png")

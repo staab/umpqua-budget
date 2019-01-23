@@ -2,8 +2,16 @@
   (:require [cljs.reader :refer [read-string]]
             [reagent.core :as r]))
 
-(defonce state (r/atom {}))
-(defonce public-token (r/cursor state [:public-token]))
+(def async-state
+  {:loaded nil :value nil :error nil})
+
+(def starting-state
+  {:session-id nil
+   :transactions async-state})
+
+(defonce state (r/atom starting-state))
+(defonce session-id (r/cursor state [:session-id]))
+(defonce transactions (r/cursor state [:transactions]))
 
 (defn load-state! []
   (if-let [v (.getItem window.localStorage "budgie")]

@@ -1,5 +1,6 @@
 (ns budgie.core
   (:require [reagent.core :as r]
+            [budgie.ws :refer [start-ws!]]
             [budgie.state :refer [load-state!]]
             [budgie.components :refer [root]]))
 
@@ -13,6 +14,7 @@
   ;; init is called ONCE when the page loads
   ;; this is called in the index.html and must be exported
   ;; so it is available even in :advanced release builds
+  (start-ws!)
   (load-state!)
   (start))
 

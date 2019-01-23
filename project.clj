@@ -3,7 +3,7 @@
   :url "http://budgie.herokuapp.com"
   :license {:name "MIT"}
   :dependencies [[org.clojure/clojure "1.9.0"]
-                 [com.plaid/plaid-java "3.0.7"]
+                 [org.clojure/data.json "0.2.6"]
                  [http-kit "2.3.0"]
                  [environ "1.0.0"]]
   :min-lein-version "2.0.0"

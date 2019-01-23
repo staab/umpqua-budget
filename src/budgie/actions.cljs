@@ -1,5 +1,5 @@
 (ns budgie.actions
-  (:require [budgie.state :refer [public-token save-state!]]
+  (:require [budgie.state :refer [state transactions session-id save-state!]]
             [budgie.ws :refer [send! handle-message]]))
 
 (declare plaid-handler)
@@ -7,21 +7,23 @@
 ;; App actions
 
 (defn load-transactions! []
-  (send! :load-transactions {:public-token @public-token}))
+  (swap! transactions assoc :loaded (.valueOf (js/Date.)))
+  (send! :load-transactions {:session-id @session-id}))
 
-(defn set-public-token! [v]
-  (reset! public-token v)
-  (save-state!)
-  (send! :add-public-token {:public-token v})
-  (load-transactions!))
+(defn create-session! [v]
+  (send! :create-session {:public-token v}))
 
 (defn link-account! []
   (.open plaid-handler))
 
 ;; Websocket handlers
 
-(defmethod handle-message :send-transactions [type {:keys [payload]}]
-  (prn payload))
+(defmethod handle-message :session-created [{:keys [payload]}]
+  (swap! state merge payload)
+  (save-state!))
+
+(defmethod handle-message :transactions-loaded [{:keys [payload]}]
+  (swap! transactions merge payload))
 
 ;; Plaid
 
@@ -31,7 +33,7 @@
    :key "10e3761c1655ff33ff9c5f410122ba"
    :product ["transactions"]
    :webhook "https://budgie.herokuapp.com"
-   :onSuccess set-public-token!})
+   :onSuccess create-session!})
 
 (def plaid-handler (.create window.Plaid (clj->js plaid-config)))
 

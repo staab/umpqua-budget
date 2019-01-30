@@ -3,50 +3,17 @@
             [org.httpkit.client :as client]
             [clojure.data.json :as json]
             [clojure.java.io :as io]
-            [environ.core :refer [env]]))
+            [environ.core :refer [env]]
+            [budgie.plaid :as p]))
 
 ;; Utils
-
-(def dt-fmt
-  (java.time.format.DateTimeFormatter/ofPattern
-    "yyyy-MM-dd"
-    java.util.Locale/ENGLISH))
 
 (defn msg [type payload]
   (pr-str {:type type :payload payload}))
 
 ;; State
 
-(def channels (atom {}))
 (def sessions (atom {}))
-
-;; Plaid client
-
-(def plaid-client-id (:plaid-client-id env))
-(def plaid-public-key (:plaid-public-key env))
-(def plaid-secret (:plaid-secret env))
-(def plaid-url (:plaid-url env))
-
-(defn plaid-get-access-token [public-token]
-  (client/post
-    {:url (str plaid-url "/item/public_token/exchange")
-     :headers {"Content-Type" "application/json"}
-     :body (json/write-str {"client_id" plaid-client-id
-                            "secret" plaid-secret
-                            "public_token" public-token})}))
-
-(defn plaid-get-transactions [session-id]
-  (let [{:keys [access-token]} (get @sessions session-id)
-        end (java.time.LocalDateTime/now)
-        start (.minusMonths end 6)]
-    (client/post
-      {:url (str plaid-url "/transactions/get")
-       :headers {"Content-Type" "application/json"}
-       :body (json/write-str {"client_id" plaid-client-id
-                              "secret" plaid-secret
-                              "access_token" access-token
-                              "start_date" (.format dt-fmt start)
-                              "end_date" (.format dt-fmt end)})})))
 
 ;; Handle message
 
@@ -55,11 +22,12 @@
 (defmethod handle-message :create-session [channel {:keys [payload]}]
   (let [{:keys [public-token]} payload
         session-id (rand)]
-    (swap! sessions assoc session-id @(plaid-get-access-token public-token))
+    (swap! sessions assoc session-id (p/exchange public-token))
     (send! channel (msg :session-created {:session-id session-id}))))
 
 (defmethod handle-message :load-transactions [channel {:keys [payload]}]
-  (send! channel (msg :transactions-loaded @(plaid-get-transactions (:session-id payload)))))
+  (let [access-token (->> payload :session-id (get @sessions) :access-token)]
+    (send! channel (msg :transactions-loaded (p/get-transactions access-token)))))
 
 ;; Websocket management
 

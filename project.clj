@@ -4,16 +4,18 @@
   :license {:name "MIT"}
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/data.json "0.2.6"]
+                 [camel-snake-kebab "0.4.0"]
                  [http-kit "2.3.0"]
                  [environ "1.0.0"]]
   :min-lein-version "2.0.0"
   :main budgie.server
-  :plugins [[environ/environ.lein "0.3.1"]]
-  :hooks [environ.leiningen.hooks]
+  :plugins [[lein-environ "1.1.0"]]
   :uberjar-name "budgie-standalone.jar"
   :profiles
-  {:production {:env {:production true}}
+  {:production
+   {:env {:production true}}
    :dev
    {:env {:plaid-client-id "5c4692077ef0a70012161453"
-          :plaid-secret "da94e96b42ef382ee7ffe109d4da09"
-          :plaid-public-key "10e3761c1655ff33ff9c5f410122ba"}}})
+          :plaid-secret "5e4972399bbb26e66ec268bc244c28"
+          :plaid-public-key "10e3761c1655ff33ff9c5f410122ba"
+          :plaid-url "https://sandbox.plaid.com"}}})

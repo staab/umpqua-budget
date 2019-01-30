@@ -2,6 +2,9 @@
 .rebel_readline_history
 yarn-error.log
 .nrepl-port
+.lein-env
+.lein-failures
+.lein-repl-history
 .shadow-cljs
 node_modules
 target

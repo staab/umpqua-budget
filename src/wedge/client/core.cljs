@@ -1,8 +1,8 @@
-(ns budgie.core
+(ns wedge.client.core
   (:require [reagent.core :as r]
-            [budgie.ws :refer [start-ws!]]
-            [budgie.state :refer [load-state!]]
-            [budgie.components :refer [root]]))
+            [wedge.client.ws :refer [start-ws!]]
+            [wedge.client.state :refer [load-state!]]
+            [wedge.client.components :refer [root]]))
 
 (enable-console-print!)
 

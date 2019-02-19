@@ -1,16 +1,18 @@
-(defproject budgie "1.0.0-SNAPSHOT"
-  :description "A programming game for kids"
-  :url "http://budgie.herokuapp.com"
+(defproject wedge "1.0.0-SNAPSHOT"
+  :description "A personal budgeting app"
+  :url "http://wedge.herokuapp.com"
   :license {:name "MIT"}
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/data.json "0.2.6"]
                  [camel-snake-kebab "0.4.0"]
                  [http-kit "2.3.0"]
+                 [korma "0.4.0"]
+                 [org.postgresql/postgresql "9.2-1002-jdbc4"]
                  [environ "1.0.0"]]
   :min-lein-version "2.0.0"
-  :main budgie.server
+  :main wedge.server.core
   :plugins [[lein-environ "1.1.0"]]
-  :uberjar-name "budgie-standalone.jar"
+  :uberjar-name "wedge-standalone.jar"
   :profiles
   {:production
    {:env {:production true}}

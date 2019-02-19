@@ -1,4 +1,4 @@
-(ns budgie.ws
+(ns wedge.client.ws
   (:require [cljs.reader :refer [read-string]]))
 
 (def ws (atom nil))

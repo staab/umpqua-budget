@@ -1,4 +1,4 @@
-(ns budgie.plaid
+(ns wedge.server.plaid
   (:require [org.httpkit.client :as client]
             [clojure.data.json :as json]
             [environ.core :refer [env]]

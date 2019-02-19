@@ -5,7 +5,7 @@
   {:target :browser
    :output-dir "public/js"
    :asset-path "/js"
-   :modules {:main {:entries [budgie.core]}}
+   :modules {:main {:entries [wedge.client.core]}}
    :compiler-options {:source-map true}
    :devtools
    {:http-root "public"

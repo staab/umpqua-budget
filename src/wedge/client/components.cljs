@@ -1,6 +1,6 @@
-(ns budgie.components
-  (:require [budgie.state :refer [session-id transactions]]
-            [budgie.actions :refer [link-account! load-transactions!]]))
+(ns wedge.client.components
+  (:require [wedge.client.state :refer [session-id transactions]]
+            [wedge.client.actions :refer [link-account! load-transactions!]]))
 
 (defn now [] (.valueOf (js/Date.)))
 

@@ -1,35 +1,9 @@
-(ns budgie.server
+(ns wedge.server.core
   (:require [org.httpkit.server :as http :refer [send!]]
-            [org.httpkit.client :as client]
             [clojure.data.json :as json]
             [clojure.java.io :as io]
             [environ.core :refer [env]]
-            [budgie.plaid :as p]))
-
-;; Utils
-
-(defn msg [type payload]
-  (pr-str {:type type :payload payload}))
-
-;; State
-
-(def sessions (atom {}))
-
-;; Handle message
-
-(defmulti handle-message (fn [channel {:keys [type]}] type))
-
-(defmethod handle-message :create-session [channel {:keys [payload]}]
-  (let [{:keys [public-token]} payload
-        session-id (rand)]
-    (swap! sessions assoc session-id (p/exchange public-token))
-    (send! channel (msg :session-created {:session-id session-id}))))
-
-(defmethod handle-message :load-transactions [channel {:keys [payload]}]
-  (let [access-token (->> payload :session-id (get @sessions) :access-token)]
-    (send! channel (msg :transactions-loaded (p/get-transactions access-token)))))
-
-;; Websocket management
+            [wedge.server.messages :refer [handle-message]]))
 
 (defn on-message [channel data]
   (prn "Handling message" data)

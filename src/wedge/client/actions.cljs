@@ -1,6 +1,6 @@
-(ns budgie.actions
-  (:require [budgie.state :refer [state transactions session-id save-state!]]
-            [budgie.ws :refer [send! handle-message]]))
+(ns wedge.client.actions
+  (:require [wedge.client.state :refer [state transactions session-id save-state!]]
+            [wedge.client.ws :refer [send! handle-message]]))
 
 (declare plaid-handler)
 
@@ -32,7 +32,7 @@
    :env "sandbox"
    :key "10e3761c1655ff33ff9c5f410122ba"
    :product ["transactions"]
-   :webhook "https://budgie.herokuapp.com"
+   :webhook "https://wedge.herokuapp.com"
    :onSuccess create-session!})
 
 (def plaid-handler (.create window.Plaid (clj->js plaid-config)))

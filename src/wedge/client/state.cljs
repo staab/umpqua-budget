@@ -1,4 +1,4 @@
-(ns budgie.state
+(ns wedge.client.state
   (:require [cljs.reader :refer [read-string]]
             [reagent.core :as r]))
 
@@ -14,8 +14,8 @@
 (defonce transactions (r/cursor state [:transactions]))
 
 (defn load-state! []
-  (if-let [v (.getItem window.localStorage "budgie")]
+  (if-let [v (.getItem window.localStorage "wedge")]
     (reset! state (read-string v))))
 
 (defn save-state! []
-  (.setItem window.localStorage "budgie" (prn-str @state)))
+  (.setItem window.localStorage "wedge" (prn-str @state)))

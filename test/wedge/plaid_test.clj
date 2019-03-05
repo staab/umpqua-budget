@@ -8,7 +8,7 @@
   (let [data (p/call p/exchange pt)]
     (is (not (nil? (:access-token data))))))
 
-(deftest test-exchange
+(deftest test-get-transactions
   (let [{:keys [access-token]} (p/call p/exchange pt)
         data (p/call p/get-transactions access-token)]
     (is (not (nil? (:accounts data))))))

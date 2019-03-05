@@ -6,7 +6,7 @@
             [wedge.server.messages :refer [handle-message]]))
 
 (defn on-message [channel data]
-  (prn "Handling message" data)
+  (println "Handling message" data)
   (handle-message channel (if (string? data) (read-string data) data)))
 
 (defn handle-websocket [req channel]

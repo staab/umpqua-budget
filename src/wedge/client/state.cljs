@@ -3,7 +3,7 @@
             [reagent.core :as r]))
 
 (def async-state
-  {:loaded nil :value nil :error nil})
+  {:last-load nil :value nil :error nil})
 
 (def starting-state
   {:session-id nil
@@ -18,4 +18,5 @@
     (reset! state (read-string v))))
 
 (defn save-state! []
-  (.setItem window.localStorage "wedge" (prn-str @state)))
+  (.setItem js/localStorage "wedge" (prn-str @state)))
+

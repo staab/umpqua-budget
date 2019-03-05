@@ -4,11 +4,24 @@
 
 (declare plaid-handler)
 
+(defn now [] (.valueOf (js/Date.)))
+
+(defn start! [cur & args]
+  (let [{:keys [last-load]} @cur]
+    (when (< (or last-load 0) (- (now) 5000))
+      (swap! cur assoc :last-load (now))
+      (apply send! args))))
+
+(defn resolve! [cur value]
+  (swap! cur assoc :last-load nil :value value :error nil))
+
+(defn reject! [cur error]
+  (swap! cur assoc :last-load nil :value nil :error error))
+
 ;; App actions
 
 (defn load-transactions! []
-  (swap! transactions assoc :loaded (.valueOf (js/Date.)))
-  (send! :load-transactions {:session-id @session-id}))
+  (start! transactions :load-transactions {:session-id @session-id}))
 
 (defn create-session! [v]
   (send! :create-session {:public-token v}))

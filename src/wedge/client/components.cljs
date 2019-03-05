@@ -6,9 +6,8 @@
 
 (defn transaction-list []
   (let [{:keys [loaded value error]} @transactions]
-    (when (or (not loaded) (< loaded (- (now) 5000)))
-      (load-transactions!))
-    (if loaded "Loading..." (do (prn value) "good!"))))
+    (load-transactions!)
+    (if loaded "Loading..." [:button {:on-click load-transactions!} "reload"])))
 
 (defn login-page []
   [:button {:on-click link-account!}

@@ -10,9 +10,10 @@
     java.util.Locale/ENGLISH))
 
 (def client-id (:plaid-client-id env))
-(def public-key (:plaid-public-key env))
+(def subdomain (:plaid-subdomain env))
 (def secret (:plaid-secret env))
-(def url (:plaid-url env))
+
+(def url (str "https://" subdomain ".plaid.com"))
 
 (defn wrap [f]
   (fn [& args]

@@ -36,7 +36,7 @@
   (save-state!))
 
 (defmethod handle-message :transactions-loaded [{:keys [payload]}]
-  (swap! transactions merge payload))
+  (swap! transactions assoc :value payload :last-load nil))
 
 ;; Plaid
 

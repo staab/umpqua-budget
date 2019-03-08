@@ -4,28 +4,47 @@
 
 (defn now [] (.valueOf (js/Date.)))
 
-(defn transaction-list []
-  (let [{:keys [loaded value error]} @transactions]
-    (load-transactions!)
-    (if loaded "Loading..." [:button {:on-click load-transactions!} "reload"])))
+(defn dashboard-loading []
+  [:div.dashboard-loading
+   "loading"])
+
+(defn dashboard-value []
+  [:div
+   [:div.sub-header
+    [:i.fa.fa-info-circle]
+    [:button {:on-click load-transactions!} "reload"]
+    [:p (str "Your account has " 1 " in it")]]])
 
 (defn dashboard []
-  [transaction-list])
-
-(defn sidebar []
-  [:div {:class "sidebar"}])
-
-(defn header []
-  [:div {:class "header"}])
-
-(defn footer []
-  [:div {:class "footer"}])
+  (let [{:keys [last-load value]} @transactions]
+    (load-transactions!)
+    (prn last-load value)
+    [:div.page.dashboard
+     (if last-load [dashboard-loading] [dashboard-value value])]))
 
 (defn add-button []
-  [:div {:class "add-button"}])
+  [:div.add-button
+    "add-button"])
+
+(defn sidebar []
+  [:div.sidebar
+   "sidebar"])
+
+(defn header []
+  [:div.header
+    "header"])
+
+(defn footer []
+  [:div.footer
+    "footer"])
 
 (defn app []
-  [dashboard sidebar header footer add-button])
+  [:div
+   [dashboard]
+   [add-button]
+   [sidebar]
+   [header]
+   [footer]])
 
 (defn login-page []
   [:button {:on-click link-account!}

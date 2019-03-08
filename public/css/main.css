@@ -1,2 +1,78 @@
+/* Layout */
+
 body, html {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+p {
+  display: inline;
+  padding: 0 0.5em;
+}
+
+.sidebar {
+  position: fixed;
+  top: 49px;
+  bottom: 0px;
+  left: -70vw;
+  width: 70vw;
+  background: linear-gradient(161.74deg, #2C87F5 10.18%, #003474 90.92%);
+  transition: left 100ms ease-in-out;
+  color: #FFEEF8;
+}
+
+.sidebar.sidebar-open {
+  left: 0px;
+}
+
+.header {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 50px;
+  background: #479AFF;
+  color: #FFEEF8;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #EDF5FF;
+  color: #479AFF;
+}
+
+.add-button {
+  position: fixed;
+  width: 75px;
+  height: 75px;
+  right: 22px;
+  bottom: 22px;
+  border-radius: 9999px;
+  background: #479AFF;
+  border: 1px solid rgba(255, 255, 255, 0.41);
+  box-shadow: 0px 10px 30px rgba(20, 0, 12, 0.05), 0px 2px 2px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFEEF8;
+}
+
+.page {
+  margin-top: 50px;
+}
+
+.sub-header {
+  padding: 10px;
+  text-align: center;
+  background: #EDF5FF;
+  color: #479AFF;
 }

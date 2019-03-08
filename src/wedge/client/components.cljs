@@ -9,12 +9,27 @@
     (load-transactions!)
     (if loaded "Loading..." [:button {:on-click load-transactions!} "reload"])))
 
+(defn dashboard []
+  [transaction-list])
+
+(defn sidebar []
+  [:div {:class "sidebar"}])
+
+(defn header []
+  [:div {:class "header"}])
+
+(defn footer []
+  [:div {:class "footer"}])
+
+(defn add-button []
+  [:div {:class "add-button"}])
+
+(defn app []
+  [dashboard sidebar header footer add-button])
+
 (defn login-page []
   [:button {:on-click link-account!}
     "link account"])
 
-(defn dashboard []
-  [transaction-list])
-
 (defn root []
-  [:div (if @session-id [dashboard] [login-page])])
+  [:div (if @session-id [app] [login-page])])

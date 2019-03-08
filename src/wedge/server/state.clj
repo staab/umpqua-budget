@@ -30,8 +30,11 @@
 
 ;; Transactions
 
-(defn save-transactions [transactions]
-  (k/insert model/transaction (k/values transactions)))
-
 (defn load-transactions [account-id]
   (k/select model/transaction (k/where {:account account-id})))
+
+(defn save-transactions [account-id transactions]
+  (let [txn-ids (set (map :plaid-transaction-id (load-transactions account-id)))
+        new-transactions (remove #(txn-ids (:plaid-transaction-id %)) transactions)]
+    (when-not (empty? new-transactions)
+      (k/insert model/transaction (k/values new-transactions)))))

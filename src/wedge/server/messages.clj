@@ -29,8 +29,9 @@
 (defn load-transactions [chan {:keys [session-id]}]
   (let [{account-id :id :keys [plaid-access-token]} (s/get-account-by-session-id session-id)
         {:keys [transactions accounts]} (p/get-transactions plaid-access-token)
+        transactions (map (partial convert-transaction account-id) transactions)
         balance (apply + (map get-balance accounts))]
-    (s/save-transactions (map (partial convert-transaction account-id) transactions))
+    (s/save-transactions account-id transactions)
     (send!
      chan
      (msg :transactions-loaded

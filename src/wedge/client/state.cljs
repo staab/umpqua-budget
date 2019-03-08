@@ -7,7 +7,12 @@
 
 (def starting-state
   {:session-id nil
-   :transactions async-state})
+   :data
+   {:transactions async-state}
+   :ui
+   {:page :dashboard
+    :sidebar :closed
+    :picker :closed}})
 
 (defonce state (r/atom starting-state))
 (defonce session-id (r/cursor state [:session-id]))

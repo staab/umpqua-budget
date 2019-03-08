@@ -6,7 +6,8 @@ CREATE TABLE account (
   "phone" varchar(255),
   "notification-pref" varchar(255),
   "plaid-item-id" text NOT NULL,
-  "plaid-access-token" text NOT NULL
+  "plaid-access-token" text NOT NULL,
+  UNIQUE("plaid-access-token")
 );
 
 CREATE TABLE budget (
@@ -36,7 +37,8 @@ CREATE TABLE transaction (
   "plaid-date" date NOT NULL,
   "plaid-amount" decimal(9, 2) NOT NULL,
   "plaid-category" jsonb NOT NULL,
-  "plaid-transaction-id" varchar(255) NOT NULL
+  "plaid-transaction-id" varchar(255) NOT NULL,
+  UNIQUE("plaid-access-token")
 );
 
 CREATE TABLE entry (

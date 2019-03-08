@@ -3,7 +3,7 @@ goog.require('cljs.core');
 goog.require('cljs.reader');
 goog.require('reagent.core');
 wedge.client.state.async_state = new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"last-load","last-load",-702317722),null,new cljs.core.Keyword(null,"value","value",305978217),null,new cljs.core.Keyword(null,"error","error",-978969032),null], null);
-wedge.client.state.starting_state = new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"session-id","session-id",-1147060351),null,new cljs.core.Keyword(null,"transactions","transactions",-1425846118),wedge.client.state.async_state], null);
+wedge.client.state.starting_state = new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"session-id","session-id",-1147060351),null,new cljs.core.Keyword(null,"data","data",-232669377),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"transactions","transactions",-1425846118),wedge.client.state.async_state], null),new cljs.core.Keyword(null,"ui","ui",-469653645),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"page","page",849072397),new cljs.core.Keyword(null,"dashboard","dashboard",-631747508),new cljs.core.Keyword(null,"sidebar","sidebar",35784458),new cljs.core.Keyword(null,"closed","closed",-919675359),new cljs.core.Keyword(null,"picker","picker",-659389603),new cljs.core.Keyword(null,"closed","closed",-919675359)], null)], null);
 if((typeof wedge !== 'undefined') && (typeof wedge.client !== 'undefined') && (typeof wedge.client.state !== 'undefined') && (typeof wedge.client.state.state !== 'undefined')){
 } else {
 wedge.client.state.state = reagent.core.atom.cljs$core$IFn$_invoke$arity$1(wedge.client.state.starting_state);

@@ -1,5 +1,5 @@
 (ns wedge.client.actions
-  (:require [wedge.client.state :refer [state transactions session-id save-state!]]
+  (:require [wedge.client.state :refer [state db ui session-id save-state!]]
             [wedge.client.ws :refer [send! handle-message]]))
 
 (declare plaid-handler)
@@ -18,10 +18,18 @@
 (defn reject! [cur error]
   (swap! cur assoc :last-load nil :value nil :error error))
 
-;; App actions
+;; UI actions
 
-(defn load-transactions! []
-  (start! transactions :load-transactions {:session-id @session-id}))
+(defn toggle-sidebar! []
+  (swap! ui update :sidebar #(if (= :open %) :closed :open)))
+
+(defn toggle-picker! [
+  (swap! ui update :picker #(if (= :open %) :closed :open)))
+
+;; Data actions
+
+(defn initialize! []
+  (start! db :initialize {:session-id @session-id}))
 
 (defn create-session! [v]
   (send! :create-session {:public-token v}))
@@ -35,8 +43,8 @@
   (swap! state merge payload)
   (save-state!))
 
-(defmethod handle-message :transactions-loaded [{:keys [payload]}]
-  (swap! transactions assoc :value payload :last-load nil))
+(defmethod handle-message :initialized [{:keys [payload]}]
+  (resolve! db payload))
 
 ;; Plaid
 
@@ -48,5 +56,5 @@
    :webhook "https://wedge.herokuapp.com"
    :onSuccess create-session!})
 
-(def plaid-handler (.create window.Plaid (clj->js plaid-config)))
+(def plaid-handler (.create js/Plaid (clj->js plaid-config)))
 

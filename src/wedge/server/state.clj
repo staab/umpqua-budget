@@ -1,4 +1,5 @@
 (ns wedge.server.state
+  (:refer-clojure :exclude [load])
   (:require [clojure.data.json :as json]
             [korma.core :as k]
             [wedge.server.model :as model]))
@@ -12,6 +13,17 @@
 
 (defn jsonb->data [jsonb] jsonb)
 
+;; Just basic crud
+
+(defn create [entity data]
+  (k/insert entity (k/values data)))
+
+(defn load [entity where]
+  (k/select entity (k/where where)))
+
+(defn one [entity where]
+  (first (k/select entity (k/where where))))
+
 ;; Accounts
 
 (defn init-account [{:keys [access-token item-id]}]
@@ -20,21 +32,27 @@
               :plaid-access-token access-token
               :session-id (k/raw "uuid_generate_v4()")}]
     (or
-     (first (k/select model/account (k/where where)))
+     (one model/account where)
      (do
-      (k/insert model/account (k/values data))
-      (first (k/select model/account (k/where where)))))))
+      (create model/account data)
+      (one model/account where)))))
 
 (defn get-account-by-session-id [session-id]
-  (first (k/select model/account (k/where {:session-id session-id}))))
+  (one model/account {:session-id session-id}))
 
 ;; Transactions
 
-(defn load-transactions [account-id]
-  (k/select model/transaction (k/where {:account account-id})))
+;; This is a better version, but it doesn't work because the query is
+;; threaded through the forms, and raw doesn't take a query. Figure out
+;; how to append raw sql to a query
+;;  (defn save-transactions [transactions]
+;;    (k/insert
+;;     model/transaction
+;;     (k/values transactions)
+;;     (k/raw "ON CONFLICT DO NOTHING")))
 
-(defn save-transactions [account-id transactions]
-  (let [txn-ids (set (map :plaid-transaction-id (load-transactions account-id)))
+(defn save-transactions [where transactions]
+  (let [txn-ids (set (map :plaid-transaction-id (load model/transaction where)))
         new-transactions (remove #(txn-ids (:plaid-transaction-id %)) transactions)]
     (when-not (empty? new-transactions)
-      (k/insert model/transaction (k/values new-transactions)))))
+      (create model/transaction new-transactions))))

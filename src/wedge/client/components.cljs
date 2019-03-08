@@ -1,6 +1,8 @@
 (ns wedge.client.components
-  (:require [wedge.client.state :refer [session-id transactions]]
-            [wedge.client.actions :refer [link-account! load-transactions!]]))
+  (:require [clojure.string :as s]
+            [camel-snake-kebab.core :refer [->Camel_Snake_Case]]
+            [wedge.client.state :refer [session-id db ui-page]]
+            [wedge.client.actions :as actions]))
 
 (defn now [] (.valueOf (js/Date.)))
 
@@ -8,19 +10,20 @@
   [:div.dashboard-loading
    "loading"])
 
-(defn dashboard-value []
+(defn dashboard-value [{:keys [balance]}]
   [:div
    [:div.sub-header
     [:i.fa.fa-info-circle]
-    [:button {:on-click load-transactions!} "reload"]
-    [:p (str "Your account has " 1 " in it")]]])
+    [:p (str "Your account has $" (.toFixed balance 2) " in it")]]
+    [:button {:on-click actions/initialize!} "reload"]])
 
 (defn dashboard []
-  (let [{:keys [last-load value]} @transactions]
-    (load-transactions!)
-    (prn last-load value)
+  (let [{:keys [last-load value]} @db]
+    (when-not value (actions/initialize!))
     [:div.page.dashboard
-     (if last-load [dashboard-loading] [dashboard-value value])]))
+     (if (or last-load (not value))
+       [dashboard-loading]
+       [dashboard-value value])]))
 
 (defn add-button []
   [:div.add-button
@@ -32,7 +35,9 @@
 
 (defn header []
   [:div.header
-    "header"])
+   [:i.fa.fa-menu {:on-click actions/toggle-sidebar!}]
+   (-> @ui-page name ->Camel_Snake_Case (s/replace #"_" " "))
+   [:i.fa.fa-calendar {:on-click actions/toggle-picker!}]])
 
 (defn footer []
   [:div.footer
@@ -47,7 +52,7 @@
    [footer]])
 
 (defn login-page []
-  [:button {:on-click link-account!}
+  [:button {:on-click actions/link-account!}
     "link account"])
 
 (defn root []

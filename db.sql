@@ -20,12 +20,14 @@ CREATE TABLE budget (
 
 CREATE TABLE category (
   "id" uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "account" uuid NOT NULL,
   "name" varchar(255),
   "budget" uuid NOT NULL
 );
 
 CREATE TABLE tag (
   "id" uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "account" uuid NOT NULL,
   "name" varchar(255),
   "category" uuid NOT NULL
 );
@@ -43,6 +45,7 @@ CREATE TABLE transaction (
 
 CREATE TABLE entry (
   "id" uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
+  "account" uuid NOT NULL,
   "transaction" uuid NOT NULL,
   "name" varchar(255) NOT NULL,
   "amount" decimal(9, 2) NOT NULL,
@@ -56,11 +59,20 @@ FOREIGN KEY ("account") REFERENCES "account" DEFERRABLE;
 ALTER TABLE category ADD CONSTRAINT "fk_budget"
 FOREIGN KEY ("budget") REFERENCES "budget" DEFERRABLE;
 
+ALTER TABLE category ADD CONSTRAINT "fk_account"
+FOREIGN KEY ("account") REFERENCES "account" DEFERRABLE;
+
 ALTER TABLE tag ADD CONSTRAINT "fk_category"
 FOREIGN KEY ("category") REFERENCES "category" DEFERRABLE;
+
+ALTER TABLE tag ADD CONSTRAINT "fk_account"
+FOREIGN KEY ("account") REFERENCES "account" DEFERRABLE;
 
 ALTER TABLE transaction ADD CONSTRAINT "fk_account"
 FOREIGN KEY ("account") REFERENCES "account" DEFERRABLE;
 
 ALTER TABLE entry ADD CONSTRAINT "fk_transaction"
 FOREIGN KEY ("transaction") REFERENCES "transaction" DEFERRABLE;
+
+ALTER TABLE entry ADD CONSTRAINT "fk_account"
+FOREIGN KEY ("account") REFERENCES "account" DEFERRABLE;

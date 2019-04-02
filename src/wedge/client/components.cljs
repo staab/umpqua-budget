@@ -1,14 +1,18 @@
 (ns wedge.client.components
   (:require [clojure.string :as s]
+            [reagent.core :as r]
             [camel-snake-kebab.core :refer [->Camel_Snake_Case]]
-            [wedge.client.state :refer [session-id db page]]
+            [wedge.client.state :refer [session-id db page now]]
             [wedge.client.actions :as actions]))
 
 ;; Utils
 
-(def nbsp {:dangerouslySetInnerHTML {:__html "&nbsp;"}})
+(def PRIMARY "#479AFF")
+(def PRIMARY-LIGHT "#EDF5FF")
+(def SUCCESS "#6DFF6A")
+(def ERROR "#FF7373")
 
-(defn now [] (.valueOf (js/Date.)))
+(def nbsp {:dangerouslySetInnerHTML {:__html "&nbsp;"}})
 
 (defn pct [n d] (if (= 0 d) 0 (* 100 (/ n d))))
 
@@ -27,12 +31,22 @@
 
 ;; Dashboard
 
-(defn dashboard-circle [stroke]
-  [:svg
-    [:path {:fill :none
-            :stroke stroke
-            :stroke-width 20
-            :d (describe-arc 50 50 100 0 180)}]])
+(defn dashboard-circle [degrees stroke delay-by]
+  (let [deg (r/atom 0)
+        start-time (+ @now delay-by)
+        attrs {:fill :none :stroke stroke :stroke-width "3%"}]
+    (fn []
+      (if (> start-time @now)
+        [:span]
+        [:svg.dashboard-circle {:view-box "0 0 100 100"}
+          (cond
+           (> degrees @deg)
+           (do
+             (js/requestAnimationFrame
+              (fn [] (reset! deg (.min js/Math degrees (* 360 (/ (- @now start-time) 400))))))
+             [:path (assoc attrs :d (describe-arc 50 50 35 0 @deg))])
+           (< degrees 360) [:path (assoc attrs :d (describe-arc 50 50 35 0 @deg))]
+           :else [:circle (assoc attrs :cx 50 :cy 50 :r 35)])]))))
 
 (defn dashboard-budget [title total budgeted]
   [:div.dashboard-budget
@@ -51,26 +65,42 @@
 (defn dashboard-loading []
   [:div.dashboard-loading
    [:div.sub-header {:dangerouslySetInnerHTML {:__html "&nbsp;"}}]
-   [dashboard-circle "#EDF5FF"]
+   [:div.dashboard-circles
+    [dashboard-circle 360 PRIMARY-LIGHT 0]]
    [dashboard-budget-empty]
    [dashboard-budget-empty]
    [dashboard-budget-empty]])
 
-(defn dashboard-value [{:keys [balance]}]
-  [:div
-   [:div.sub-header
-    [:i.fa.fa-info-circle]
-    [:p (str "Your account has $" (.toFixed balance 2) " in it")]]
-    [dashboard-circle "#EDF5FF"]
-    [:button {:on-click actions/initialize!} "reload"]])
+(defn dashboard-value [{:keys [balance budgets] :as data}]
+  (let [spent 1989
+        budget 1490]
+    [:div
+     [:div.sub-header
+      [:i.fa.fa-info-circle]
+      [:p (str "Your account has $" (.toFixed balance 2) " in it")]]
+    [:div.dashboard-content
+     (if (> spent budget)
+      [:div.dashboard-circles
+       [dashboard-circle 360 PRIMARY 0]
+       [dashboard-circle (-> spent (/ budget) (* 360) (- 360)) ERROR 400]]
+      [:div.dashboard-circles
+       [dashboard-circle 360 SUCCESS 0]
+       [dashboard-circle (-> spent (/ budget) (* 360)) PRIMARY 0]])
+      [:div.dashboard-budgets.section
+       (if (empty? budgets)
+         [:p
+          "No budgets yet! Click "
+          [:a {:href "/budgets/new"} "here"]
+          " to add one."]
+         "hi")]]]))
 
 (defn dashboard []
   (let [{:keys [last-load value]} @db]
     (when-not value (actions/initialize!))
     [:div.page.dashboard
-     (if (or last-load (not value))
-       [dashboard-loading]
-       [dashboard-value value])]))
+     (if value
+       [dashboard-value value]
+       [dashboard-loading])]))
 
 (defn add-button []
   [:div.add-button

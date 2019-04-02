@@ -22,9 +22,9 @@
   ;; init is called ONCE when the page loads
   ;; this is called in the index.html and must be exported
   ;; so it is available even in :advanced release builds
-  ;;  (doto (History.)
-  ;;        (events/listen EventType.NAVIGATE #(secretary/dispatch! (.-token %)))
-  ;;        (.setEnabled true))
+  (doto (History.)
+        (events/listen EventType.NAVIGATE #(secretary/dispatch! (.-token %)))
+        (.setEnabled true))
   (start-ws!
    (fn []
     (load-state!)

@@ -21,15 +21,20 @@
 
 ;; Websocket setup
 
+(def ws-interval (atom nil))
+
 (defn on-message [evt]
   (prn "Handling message" (.-data evt))
   (handle-message (cljs.reader/read-string (.-data evt))))
 
 (defn start-ws! [f]
   (when-let [old-ws @ws] (.close old-ws))
+  (js/clearInterval @ws-interval)
+  (reset! ws-interval (js/setInterval #(when (nil? @ws) (start-ws! identity)) 1000))
   (let [socket (js/WebSocket. "ws://localhost:5000")]
     (.addEventListener socket "open" (fn [] (reset! ws socket) (f)))
     (.addEventListener socket "message" on-message)
+    (.addEventListener socket "error" #(reset! ws nil))
     (.addEventListener socket "close" #(reset! ws nil))))
 
-(js/setInterval #(when (nil? @ws) (start-ws! identity)) 1000)
+

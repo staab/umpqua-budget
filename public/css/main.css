@@ -13,7 +13,11 @@ body, html {
 
 p {
   display: inline;
-  padding: 0 0.5em;
+  color: #091F34;
+}
+
+a {
+  color: #479AFF;
 }
 
 h1 {
@@ -95,6 +99,11 @@ h4 {
 
 .page {
   margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.section {
+  padding: 12px 18px;
 }
 
 .sub-header {
@@ -104,59 +113,15 @@ h4 {
   color: #479AFF;
 }
 
-/* Dashboard circle */
+/* Dashboard */
+
+.dashboard-circles {
+  height: 100vw;
+}
 
 .dashboard-circle {
-  width: 60vw;
-  height: 60vw;
-  position: relative;
-  margin: 14px auto;
-  transform: rotate(180deg);
-}
-
-.circle-inner {
-  width: 60vw;
-  height: 60vw;
-  border-radius: 50%;
-  border: 1.5vw solid #EDF5FF;
   position: absolute;
-  top: 0;
-  right: 0;
-  box-sizing: border-box;
 }
-
-.circle-left .circle-inner {
-  top: auto;
-  bottom: 0;
-  right: auto;
-  left: 0;
-}
-
-.circle-mask {
-  width: 50%;
-  height: 0%;
-  position: absolute;
-  top: 0;
-  right: 0;
-  overflow: hidden;
-  animation: circle-appear 300ms ease-in-out 300ms forwards;
-}
-
-.circle-left {
-  top: auto;
-  bottom: 0;
-  right: auto;
-  left: 0;
-  animation: circle-appear 300ms ease-out forwards;
-}
-
-@keyframes circle-appear {
-  to {
-    height: 100%;
-  }
-}
-
-/* Dashboard */
 
 .dashboard-budget {
   margin: 12px 18px;
@@ -175,5 +140,21 @@ h4 {
 @keyframes budget-appear {
   to {
     width: 85%;
+  }
+}
+
+@media (min-width: 600px) {
+  .dashboard-content {
+    display: flex;
+  }
+
+  .dashboard-circles {
+    position: relative;
+    width: 30vw;
+    height: 30vw;
+  }
+
+  .dashboard-budgets {
+    width: 70vw;
   }
 }

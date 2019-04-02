@@ -1,15 +1,13 @@
 (ns wedge.client.actions
-  (:require [wedge.client.state :refer [state db session-id save-state!]]
+  (:require [wedge.client.state :refer [state db session-id save-state! now]]
             [wedge.client.ws :refer [send! handle-message]]))
 
 (declare plaid-handler)
 
-(defn now [] (.valueOf (js/Date.)))
-
 (defn start! [cur & args]
   (let [{:keys [last-load]} @cur]
-    (when (< (or last-load 0) (- (now) 5000))
-      (swap! cur assoc :last-load (now))
+    (when (< (or last-load 0) (- @now 5000))
+      (swap! cur assoc :last-load @now)
       (apply send! args))))
 
 (defn resolve! [cur value]

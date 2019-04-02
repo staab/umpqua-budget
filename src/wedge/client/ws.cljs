@@ -25,11 +25,11 @@
   (prn "Handling message" (.-data evt))
   (handle-message (cljs.reader/read-string (.-data evt))))
 
-(defn start-ws! []
+(defn start-ws! [f]
   (when-let [old-ws @ws] (.close old-ws))
   (let [socket (js/WebSocket. "ws://localhost:5000")]
-    (.addEventListener socket "open" #(reset! ws socket))
+    (.addEventListener socket "open" (fn [] (reset! ws socket) (f)))
     (.addEventListener socket "message" on-message)
     (.addEventListener socket "close" #(reset! ws nil))))
 
-(js/setInterval #(when (nil? @ws) (start-ws!)) 1000)
+(js/setInterval #(when (nil? @ws) (start-ws! identity)) 1000)

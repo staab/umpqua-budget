@@ -2,27 +2,22 @@
   (:require [cljs.reader :refer [read-string]]
             [reagent.core :as r]))
 
-(def async-state
-  {:last-load nil :value nil :error nil})
-
 (def starting-state
   {:session-id nil
-   :db async-state
-   :ui
-   {:page :dashboard
-    :sidebar :closed
-    :picker :closed}})
+   :page :dashboard
+   :sidebar {:open? false}
+   :picker {:open? false}
+   :db {:last-load nil :value nil :error nil}})
 
 (defonce state (r/atom starting-state))
 (defonce session-id (r/cursor state [:session-id]))
 (defonce db (r/cursor state [:db]))
-(defonce ui (r/cursor state [:ui]))
-(defonce ui-page (r/cursor state [:ui :page]))
-(defonce ui-sidebar (r/cursor state [:ui :sidebar]))
-(defonce ui-picker (r/cursor state [:ui :picker]))
+(defonce page (r/cursor state [:page]))
+(defonce sidebar (r/cursor state [:sidebar]))
+(defonce picker (r/cursor state [:picker]))
 
 (defn load-state! []
-  (if-let [v (.getItem window.localStorage "wedge")]
+  (if-let [v (.getItem js/localStorage "wedge")]
     (reset! state (read-string v))))
 
 (defn save-state! []

@@ -1,5 +1,5 @@
 (ns wedge.client.actions
-  (:require [wedge.client.state :refer [state db ui session-id save-state!]]
+  (:require [wedge.client.state :refer [state db session-id save-state!]]
             [wedge.client.ws :refer [send! handle-message]]))
 
 (declare plaid-handler)
@@ -20,11 +20,14 @@
 
 ;; UI actions
 
-(defn toggle-sidebar! []
-  (swap! ui update :sidebar #(if (= :open %) :closed :open)))
+(defn set-page! [page]
+  (swap! db assoc :page page))
 
-(defn toggle-picker! [
-  (swap! ui update :picker #(if (= :open %) :closed :open)))
+(defn toggle-sidebar! []
+  (swap! db update-in [:sidebar :open?] not))
+
+(defn toggle-picker! []
+  (swap! db update-in [:picker :open?] not))
 
 ;; Data actions
 

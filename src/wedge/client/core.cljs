@@ -1,18 +1,15 @@
 (ns wedge.client.core
-  (:require-macros [secretary.core :refer [defroute]])
-  (:require [goog.events :as events]
-            [reagent.core :as r]
-            [secretary.core :as secretary]
+  (:require [reagent.core :as r]
             [wedge.client.ws :refer [start-ws!]]
             [wedge.client.state :refer [load-state!]]
             [wedge.client.actions :refer [set-page!]]
-            [wedge.client.components :refer [root]])
-  (:import [goog History]
-           [goog.history EventType]))
+            [wedge.client.components.core :refer [root]]
+            [wedge.client.components.utils :refer [history]]))
 
 (enable-console-print!)
 
-(defroute "/" [] (set-page! :dashboard))
+(defn set-page-from-location! [location]
+  (-> location .-pathname (subs 1) keyword set-page!))
 
 ;; start is called by init and after code reloading finishes
 (defn ^:dev/after-load start []
@@ -22,13 +19,12 @@
   ;; init is called ONCE when the page loads
   ;; this is called in the index.html and must be exported
   ;; so it is available even in :advanced release builds
-  (doto (History.)
-        (events/listen EventType.NAVIGATE #(secretary/dispatch! (.-token %)))
-        (.setEnabled true))
   (start-ws!
    (fn []
-    (load-state!)
-    (start))))
+     (load-state!)
+     (set-page-from-location! js/location)
+     (.listen history set-page-from-location!)
+     (start))))
 
 ;; this is called before any code is reloaded
 (defn ^:dev/before-load stop []

@@ -7,7 +7,7 @@
    :session-id nil
    :page :dashboard
    :sidebar {:open? false}
-   :picker {:open? false}
+   :picker {:open? false :unit :month}
    :db {:last-load nil :value nil :error nil}})
 
 (defonce state (r/atom starting-state))

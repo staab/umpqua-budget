@@ -1,0 +1,8 @@
+{
+"version":3,
+"file":"goog.history.eventtype.js",
+"lineCount":3,
+"mappings":"AAoBAA,IAAAC,QAAA,CAAa,wBAAb,CAAA;AAOA,sBAAAD,IAAAE,QAAAC,UAAA,GAAyB,CACvBC,SAAU,UADa,CAAzB;;",
+"sources":["goog/history/eventtype.js"],
+"names":["goog","provide","history","EventType","NAVIGATE"]
+}

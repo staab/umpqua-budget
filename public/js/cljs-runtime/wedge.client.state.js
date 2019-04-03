@@ -2,7 +2,7 @@ goog.provide('wedge.client.state');
 goog.require('cljs.core');
 goog.require('cljs.reader');
 goog.require('reagent.core');
-wedge.client.state.starting_state = new cljs.core.PersistentArrayMap(null, 6, [new cljs.core.Keyword(null,"now","now",-1650525531),(new Date()).valueOf(),new cljs.core.Keyword(null,"session-id","session-id",-1147060351),null,new cljs.core.Keyword(null,"page","page",849072397),new cljs.core.Keyword(null,"dashboard","dashboard",-631747508),new cljs.core.Keyword(null,"sidebar","sidebar",35784458),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"open?","open?",1238443125),false], null),new cljs.core.Keyword(null,"picker","picker",-659389603),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"open?","open?",1238443125),false], null),new cljs.core.Keyword(null,"db","db",993250759),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"last-load","last-load",-702317722),null,new cljs.core.Keyword(null,"value","value",305978217),null,new cljs.core.Keyword(null,"error","error",-978969032),null], null)], null);
+wedge.client.state.starting_state = new cljs.core.PersistentArrayMap(null, 6, [new cljs.core.Keyword(null,"now","now",-1650525531),(new Date()).valueOf(),new cljs.core.Keyword(null,"session-id","session-id",-1147060351),null,new cljs.core.Keyword(null,"page","page",849072397),new cljs.core.Keyword(null,"dashboard","dashboard",-631747508),new cljs.core.Keyword(null,"sidebar","sidebar",35784458),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"open?","open?",1238443125),false], null),new cljs.core.Keyword(null,"picker","picker",-659389603),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"open?","open?",1238443125),false,new cljs.core.Keyword(null,"unit","unit",375175175),new cljs.core.Keyword(null,"month","month",-1960248533)], null),new cljs.core.Keyword(null,"db","db",993250759),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"last-load","last-load",-702317722),null,new cljs.core.Keyword(null,"value","value",305978217),null,new cljs.core.Keyword(null,"error","error",-978969032),null], null)], null);
 if((typeof wedge !== 'undefined') && (typeof wedge.client !== 'undefined') && (typeof wedge.client.state !== 'undefined') && (typeof wedge.client.state.state !== 'undefined')){
 } else {
 wedge.client.state.state = reagent.core.atom.cljs$core$IFn$_invoke$arity$1(wedge.client.state.starting_state);
@@ -37,10 +37,10 @@ cljs.core.swap_BANG_.cljs$core$IFn$_invoke$arity$4(wedge.client.state.state,cljs
 return requestAnimationFrame(wedge.client.state.reload_now);
 });
 wedge.client.state.load_state_BANG_ = (function wedge$client$state$load_state_BANG_(){
-var temp__5718__auto___28280 = localStorage.getItem("wedge");
-if(cljs.core.truth_(temp__5718__auto___28280)){
-var v_28281 = temp__5718__auto___28280;
-cljs.core.reset_BANG_(wedge.client.state.state,cljs.reader.read_string.cljs$core$IFn$_invoke$arity$1(v_28281));
+var temp__5718__auto___25878 = localStorage.getItem("wedge");
+if(cljs.core.truth_(temp__5718__auto___25878)){
+var v_25879 = temp__5718__auto___25878;
+cljs.core.reset_BANG_(wedge.client.state.state,cljs.reader.read_string.cljs$core$IFn$_invoke$arity$1(v_25879));
 } else {
 }
 

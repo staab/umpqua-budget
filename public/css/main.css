@@ -14,13 +14,20 @@ body, html {
 p {
   display: inline;
   color: #091F34;
+  margin: 0;
+}
+
+small {
+  color: #091F34;
+  font-size: 10px;
 }
 
 a {
   color: #479AFF;
 }
 
-h1 {
+h1, h2, h3, h4 {
+  margin: 0;
 }
 
 h2 {
@@ -34,6 +41,49 @@ h3 {
 
 h4 {
   font-size: 14px;
+}
+
+.dot-green, .dot-red {
+  margin: 12px;
+  border-radius: 50%;
+  width: 5px;
+  height: 5px;
+}
+
+.dot-green {
+  background-color: #6DFF6A;
+}
+
+.dot-red {
+  background-color: #FF7373;
+}
+
+/* Forms */
+
+.form-row {
+  display: flex;
+  align-items: center;
+}
+
+.form-row label {
+  font-size: 16px;
+  width: 25vw;
+  color: #091F34;
+}
+
+.form-row input, .form-row select {
+  flex-grow: 1;
+  background-color: rgba(9, 31, 52, .05);
+  border-radius: 0px;
+  border: none;
+  border-bottom: 1px solid #091F34;
+  padding: 8px;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 16px;
+}
+
+.form-row input[type="number"] {
+  max-width: 70px;
 }
 
 /* Layout */

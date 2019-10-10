@@ -8,6 +8,8 @@
 
 (enable-console-print!)
 
+;; No need for a packaged for history, use
+;; https://read.reduxbook.com/markdown/part2/09-routing.html
 (defn set-page-from-location! [location]
   (-> location .-pathname (subs 1) keyword set-page!))
 

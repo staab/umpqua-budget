@@ -7,7 +7,7 @@
 (def SUCCESS "#6DFF6A")
 (def DANGER "#FF7373")
 
-(def nbsp {:dangerouslySetInnerHTML {:__html "&nbsp;"}})
+(def nbsp [:span {:dangerouslySetInnerHTML {:__html "&nbsp;"}}])
 
 (defn pct [n d] (if (= 0 d) 0 (* 100 (/ n d))))
 
@@ -24,6 +24,8 @@
         a (s/join " " ["A" r r 0 large-arc-flag 0 end-x end-y])]
     (str m " " a)))
 
+;; No need for a package for history, use
+;; https://read.reduxbook.com/markdown/part2/09-routing.html
 (def history (createBrowserHistory))
 
 (defn link
